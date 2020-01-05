@@ -1,4 +1,5 @@
 #include <iostream>
+#define RAM_SIZE 0xffff
 
 class CPU {
 public:
@@ -6,7 +7,7 @@ public:
     uint8_t a,x,y;
     uint16_t sp;
     uint16_t pc;
-    // uint8_t memory[];
+    uint8_t memory[RAM_SIZE];
 
 
     //Constructor

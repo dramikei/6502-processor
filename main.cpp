@@ -1,9 +1,9 @@
 #include <iostream>
 #include "CPU.h"
+#include "Emulator.h"
 
 int main(int argc, char **argv) {
-    uint8_t memory[0xffff];
     CPU cpu = CPU();
-    // std::cout << cpu.memory;
+    Emulator emulator = Emulator(cpu);
     return 0;
 }
