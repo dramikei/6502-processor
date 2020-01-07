@@ -7,6 +7,7 @@ int main(int argc, char **argv) {
     Emulator emulator = Emulator(cpu);
     while(true) {
         emulator.emulate();
+        break; //temperory
     }
     return 0;
 }
