@@ -3,16 +3,23 @@
 #include "CPU.h"
 #include "Emulator.h"
 
-Emulator::Emulator(CPU &cpu_) {
+Emulator::Emulator(CPU *cpu_) {
     std::cout << "Initialising Emulator" << std::endl;
-    cpu_ptr = &cpu_;
+    cpu_ptr = cpu_;
 }
 void Emulator::emulate() {
     //TODO
     uint8_t *opcode = &cpu_ptr->memory[cpu_ptr->pc];
-    // std::cout << std::get<0>(OPCODE_TABLE[0])<<std::endl;
+    std::cout<<opcode[1]<<"\n"; //cout not working?
+    // std::cout<<std::get<0>(OPCODE_TABLE[opcode[1]])<<"\n";
+    // std::cout<<std::get<1>(OPCODE_TABLE[opcode[1]])<<"\n";
     switch(std::get<0>(OPCODE_TABLE[*opcode])) {
         case ADC: {
+            execute_adc(opcode);
+            break;
+        }
+        case AND: {
+            execute_and(opcode);
             break;
         }
         case ASL: {
@@ -178,9 +185,69 @@ void Emulator::emulate() {
             break;
         }
         default:
-        std::cout << "Unimplemented opcode";
-        exit(1);
+            std::cout << "Unimplemented opcode";
+            exit(1);
     }
+}
 
+void Emulator::execute_adc(uint8_t *opcode) {
+    switch(fetchAddressingMode(opcode)) {
+        case Immediate: {
+            break;
+        }
+        case Absolute: {
+            break;
+        }
+        case ZeroPage: {
+            break;
+        }
+        case ZeroPageX: {
+            break;
+        }
+        case AbsoluteX: {
+            break;
+        }
+        case AbsoluteY: {
+            break;
+        }
+        case IndirectX: {
+            break;
+        }
+        case IndirectY: {
+            break;
+        }
+    }
+}
 
+void Emulator::execute_and(uint8_t *opcode) {
+    switch(fetchAddressingMode(opcode)) {
+        case Immediate: {
+            break;
+        }
+        case Absolute: {
+            break;
+        }
+        case ZeroPage: {
+            break;
+        }
+        case ZeroPageX: {
+            break;
+        }
+        case AbsoluteX: {
+            break;
+        }
+        case AbsoluteY: {
+            break;
+        }
+        case IndirectX: {
+            break;
+        }
+        case IndirectY: {
+            break;
+        }
+    }
+}
+
+Emulator::AddressMode Emulator::fetchAddressingMode(uint8_t *opcode) {
+    return std::get<1>(OPCODE_TABLE[opcode[1]]);
 }

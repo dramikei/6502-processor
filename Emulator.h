@@ -25,6 +25,9 @@ class Emulator {
         SHY,ARR,SRE,ALR,
         RLA,ANC,SLO,
     };
+
+    //indexed indirect mode == IndirectX
+    //indirect indexed addressing == IndirectY
     enum AddressMode {
         Immediate,
         ZeroPage,ZeroPageX,ZeroPageY,
@@ -324,6 +327,9 @@ class Emulator {
         };
     AddressMode addressMode;
     public:
-    Emulator(CPU &cpu_);
+    Emulator(CPU *cpu_);
     void emulate();
+    void execute_adc(uint8_t *opcode);
+    void execute_and(uint8_t *opcode);
+    AddressMode fetchAddressingMode(uint8_t *opcode);
 };
