@@ -23,12 +23,15 @@ void Emulator::emulate() {
             break;
         }
         case ASL: {
+            execute_asl(opcode);
             break;
         }
         case BCC: {
+            execute_bcc(opcode);
             break;
         }
         case BCS: {
+            execute_bcs(opcode);
             break;
         }
         case BEQ: {
@@ -188,64 +191,104 @@ void Emulator::emulate() {
             std::cout << "Unimplemented opcode";
             exit(1);
     }
+    cpu_ptr->pc++;
 }
 
 void Emulator::execute_adc(uint8_t *opcode) {
-    switch(fetchAddressingMode(opcode)) {
-        case Immediate: {
-            break;
-        }
-        case Absolute: {
-            break;
-        }
-        case ZeroPage: {
-            break;
-        }
-        case ZeroPageX: {
-            break;
-        }
-        case AbsoluteX: {
-            break;
-        }
-        case AbsoluteY: {
-            break;
-        }
-        case IndirectX: {
-            break;
-        }
-        case IndirectY: {
-            break;
-        }
-    }
+    uint8_t data = dataFromAddressMode(opcode);
+    int result = cpu_ptr->a + data + cpu_ptr->c;
+    //TODO: call Setflags() function
+    cpu_ptr->a = (result&0xff);
 }
 
 void Emulator::execute_and(uint8_t *opcode) {
+    uint8_t data = dataFromAddressMode(opcode);
+    int result = cpu_ptr->a & data;
+    //TODO: call Setflags() function
+    cpu_ptr->a = (result&0xff);
+}
+
+void Emulator::execute_asl(uint8_t *opcode) {
+    
+}
+
+void Emulator::execute_bcc(uint8_t *opcode) {
+    
+}
+
+void Emulator::execute_bcs(uint8_t *opcode) {
+    
+}
+
+uint8_t Emulator::dataFromAddressMode(uint8_t *opcode) {
+    uint8_t data;
     switch(fetchAddressingMode(opcode)) {
+
         case Immediate: {
+            data = opcode[1];
+            break;
+        }
+        case Accumulator: {
+            data = cpu_ptr->a;
             break;
         }
         case Absolute: {
-            break;
-        }
-        case ZeroPage: {
-            break;
-        }
-        case ZeroPageX: {
+            data = cpu_ptr->memory[((opcode[2]<<8)|opcode[1])];
             break;
         }
         case AbsoluteX: {
+            data = cpu_ptr->memory[((opcode[2]<<8)|opcode[1]) + cpu_ptr->x];
             break;
         }
         case AbsoluteY: {
+            data = cpu_ptr->memory[((opcode[2]<<8)|opcode[1]) + cpu_ptr->y];
+            break;
+        }
+        case ZeroPage: {
+            if((opcode[1]) > 0xff) {
+                std::cout<< "ERROR AT OPCODE: " << *opcode << " ZeroPage address more than 1 byte\n";
+                exit(1);
+            } else {
+                data = cpu_ptr->memory[opcode[1]];
+            }
+            break;
+        }
+        case ZeroPageX: {
+            if((opcode[1] + cpu_ptr->x) > 0xff) {
+                std::cout<< "ERROR AT OPCODE: " << *opcode << " ZeroPage address more than 1 byte\n";
+                exit(1);
+            } else {
+                data = cpu_ptr->memory[opcode[1] + cpu_ptr->x];
+            }
+            break;
+        }
+        case ZeroPageY: {
+            if((opcode[1] + cpu_ptr->x) > 0xff) {
+                std::cout<< "ERROR AT OPCODE: " << *opcode << " ZeroPage address more than 1 byte\n";
+                exit(1);
+            } else {
+                data = cpu_ptr->memory[opcode[1] + cpu_ptr->y];
+            }
+            break;
+        }
+        case Indirect: {
+            data = cpu_ptr->memory[cpu_ptr->memory[((opcode[2]<<8)|opcode[1])]];
             break;
         }
         case IndirectX: {
+            data = cpu_ptr->memory[cpu_ptr->memory[((opcode[2]<<8)|opcode[1])+cpu_ptr->x]];
             break;
         }
         case IndirectY: {
+            data = cpu_ptr->memory[cpu_ptr->memory[((opcode[2]<<8)|opcode[1])+cpu_ptr->y]];
+            break;
+        }
+        case Relative: {
+            // data = cpu_ptr->memory[cpu_ptr->pc+opcode[1]];
             break;
         }
     }
+    return data;
 }
 
 Emulator::AddressMode Emulator::fetchAddressingMode(uint8_t *opcode) {
