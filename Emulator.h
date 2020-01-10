@@ -335,5 +335,5 @@ class Emulator {
     void execute_bcs(uint8_t *opcode);
     void execute_bcc(uint8_t *opcode);
     AddressMode fetchAddressingMode(uint8_t *opcode);
-    uint8_t dataFromAddressMode(uint8_t *opcode)
+    uint8_t dataFromAddressMode(uint8_t *opcode);
 };
