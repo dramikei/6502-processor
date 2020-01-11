@@ -334,6 +334,8 @@ class Emulator {
     void execute_asl(uint8_t *opcode);
     void execute_bcs(uint8_t *opcode);
     void execute_bcc(uint8_t *opcode);
+
+    bool crossed_page_boundary(uint16_t ptr1, uint16_t ptr2);
     AddressMode fetchAddressingMode(uint8_t *opcode);
     uint8_t dataFromAddressMode(uint8_t *opcode);
 };

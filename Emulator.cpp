@@ -197,27 +197,36 @@ void Emulator::emulate() {
 void Emulator::execute_adc(uint8_t *opcode) {
     uint8_t data = dataFromAddressMode(opcode);
     int result = cpu_ptr->a + data + cpu_ptr->c;
-    //TODO: call Setflags() function
+    //TODO: call Setflags() function;
     cpu_ptr->a = (result&0xff);
 }
 
 void Emulator::execute_and(uint8_t *opcode) {
     uint8_t data = dataFromAddressMode(opcode);
     int result = cpu_ptr->a & data;
-    //TODO: call Setflags() function
+    //TODO: call Setflags() function;
     cpu_ptr->a = (result&0xff);
 }
 
 void Emulator::execute_asl(uint8_t *opcode) {
-    
+    uint8_t data = dataFromAddressMode(opcode);
+    if(data&0x80 == 1) {
+        cpu_ptr->c = 1;
+    }
+    data = data<<1;
+    //TODO: Store data;
 }
 
 void Emulator::execute_bcc(uint8_t *opcode) {
-    
+    if(cpu_ptr->c == 0) {
+        //execute_branch(opcode);
+    }
 }
 
 void Emulator::execute_bcs(uint8_t *opcode) {
-    
+    if(cpu_ptr->c == 1) {
+        //execute_branch(opcode);
+    }
 }
 
 uint8_t Emulator::dataFromAddressMode(uint8_t *opcode) {
@@ -284,12 +293,17 @@ uint8_t Emulator::dataFromAddressMode(uint8_t *opcode) {
             break;
         }
         case Relative: {
+            //TODO: Check this
             // data = cpu_ptr->memory[cpu_ptr->pc+opcode[1]];
             break;
         }
     }
     return data;
 }
+
+ bool Emulator::crossed_page_boundary(uint16_t ptr1, uint16_t ptr2) {
+        return (ptr1 / 256) != (ptr2 / 256);
+    }
 
 Emulator::AddressMode Emulator::fetchAddressingMode(uint8_t *opcode) {
     return std::get<1>(OPCODE_TABLE[opcode[1]]);
