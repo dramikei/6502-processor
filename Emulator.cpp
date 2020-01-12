@@ -210,7 +210,7 @@ void Emulator::execute_and(uint8_t *opcode) {
 
 void Emulator::execute_asl(uint8_t *opcode) {
     uint8_t data = dataFromAddressMode(opcode);
-    if(data&0x80 == 1) {
+    if((data&0x80) == 1) {
         cpu_ptr->c = 1;
     }
     data = data<<1;
@@ -297,6 +297,7 @@ uint8_t Emulator::dataFromAddressMode(uint8_t *opcode) {
             // data = cpu_ptr->memory[cpu_ptr->pc+opcode[1]];
             break;
         }
+        case Implicit: { break; } // Won't be used.
     }
     return data;
 }
